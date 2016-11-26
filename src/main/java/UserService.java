@@ -9,11 +9,11 @@ import java.util.Collection;
 
 
 @Path("/get")
-public class HelloWorld {
+public class UserService {
 
     private UserDb db;
     @GET
-    @Path("/hello")
+    @Path("/users")
     @Produces(MediaType.TEXT_PLAIN)
     public String getMessage() {
         this.db = new UserDb();
@@ -24,4 +24,7 @@ public class HelloWorld {
         }
         return str;
     }
+
+
+
 }
