@@ -4,14 +4,17 @@ import DB.DAL.UserDb;
 import DB.Entities.UserEntity;
 import ViewModel.UserViewModel;
 
+import javax.enterprise.inject.Model;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-@Path("/get")
+@Path("/")
 public class UserService {
 
     private UserDb db;
@@ -23,13 +26,9 @@ public class UserService {
     @GET
     @Path("/users")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getMessage() {
-        String str = "";
-        Collection<UserEntity> userEntities = db.findUsersByName();
-        for (UserEntity u: userEntities) {
-            str += u.getUsername() + "\n";
-        }
-        return str;
+    public List<UserViewModel> getAllUsers(UserViewModel user, String searchTerm) {
+        Collection<UserEntity> userEntities = db.findUsersByName(user, searchTerm);
+        return userEntities.stream().map(ModelConverter::convertToUserViewModel).collect(Collectors.toList());
     }
 
     @POST
