@@ -24,8 +24,17 @@ public class FollowService {
     @POST
     @Path("/Add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addFriend(FollowViewModel follow) {
+    public Response addFollow(FollowViewModel follow) {
         db.addFollower(follow);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/Remove")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeFollow(FollowViewModel follow) {
+        System.out.println(follow.getFollowId());
+        db.removeFollow(follow);
         return Response.ok().build();
     }
 

@@ -41,4 +41,14 @@ public class FollowDb {
         entityManager.getTransaction().commit();
         entityManager.close();
     }
+
+    public void removeFollow(FollowViewModel follow) {
+        entityManager = DbContext.emf.createEntityManager();
+        this.follow = entityManager.find(FollowEntity.class,follow.getFollowId());
+        entityManager.getTransaction().begin();
+        entityManager.remove(this.follow);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
 }

@@ -63,12 +63,14 @@ public class ModelConverter {
 
     static FollowViewModel convertToFollowViewModel(FollowEntity f){
         FollowViewModel follow = new FollowViewModel();
+        follow.setFollowId(f.getFollowId());
         follow.setFollower(convertToUserViewModel(f.getFollower()));
         follow.setFollowing(convertToUserViewModel(f.getFollowing()));
         return follow;
     }
     public static FollowEntity convertToFollowEntity(FollowViewModel f){
         FollowEntity follow = new FollowEntity();
+        follow.setFollowId(f.getFollowId());
         follow.setFollower(convertToUserEntity(f.getFollower()));
         follow.setFollowing(convertToUserEntity(f.getFollowing()));
         return follow;
