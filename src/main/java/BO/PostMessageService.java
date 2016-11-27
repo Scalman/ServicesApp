@@ -46,8 +46,8 @@ public class PostMessageService {
             postEntities.addAll(db.findPostsByUser(f.getFollowing()));
         }
         List<PostViewModel> posts =  postEntities.stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
-        Type postsType = new TypeToken<List<PostViewModel>>() {}.getType();
-        String json = new Gson().toJson(posts,postsType);
+        Type type = new TypeToken<List<PostViewModel>>() {}.getType();
+        String json = new Gson().toJson(posts,type);
         return Response.ok().entity(json).build();
     }
 
@@ -57,8 +57,8 @@ public class PostMessageService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getYourPosts(UserViewModel user) {
         List<PostViewModel> posts =  db.findPostsByUser(user).stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
-        Type postsType = new TypeToken<List<PostViewModel>>() {}.getType();
-        String json = new Gson().toJson(posts,postsType);
+        Type type = new TypeToken<List<PostViewModel>>() {}.getType();
+        String json = new Gson().toJson(posts,type);
         return Response.ok().entity(json).build();
     }
 }

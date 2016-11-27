@@ -37,8 +37,8 @@ public class ChatService {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getChatMessagesBySenderAndReceiver(ChatMessageViewModel chat) {
         List<ChatMessageViewModel> chatMessages =  db.findChatMessagesBySenderAndReceiver(chat).stream().map(ModelConverter::convertToChatMessageViewModel).collect(Collectors.toList());
-        Type chatMessagesType = new TypeToken<List<ChatMessageViewModel>>() {}.getType();
-        String json = new Gson().toJson(chatMessages,chatMessagesType);
+        Type type = new TypeToken<List<ChatMessageViewModel>>() {}.getType();
+        String json = new Gson().toJson(chatMessages,type);
         return Response.ok().entity(json).build();
     }
 }

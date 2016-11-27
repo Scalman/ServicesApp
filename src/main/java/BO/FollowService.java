@@ -36,8 +36,8 @@ public class FollowService {
     public Response getYourFollows(@PathParam("id") String id) {
         int userId = Integer.parseInt(id);
         List<FollowViewModel> follows =  db.findYourFollows(userId).stream().map(ModelConverter::convertToFollowViewModel).collect(Collectors.toList());
-        Type followsType = new TypeToken<List<FollowViewModel>>() {}.getType();
-        String json = new Gson().toJson(follows,followsType);
+        Type type = new TypeToken<List<FollowViewModel>>() {}.getType();
+        String json = new Gson().toJson(follows,type);
         return Response.ok().entity(json).build();
     }
 
@@ -47,8 +47,8 @@ public class FollowService {
     public Response getYourFollowsByName(@PathParam("id") String id,@PathParam("name") String name) {
         int userId = Integer.parseInt(id);
         List<FollowViewModel> follows =  db.findYourFollowsByName(userId,name).stream().map(ModelConverter::convertToFollowViewModel).collect(Collectors.toList());
-        Type followsType = new TypeToken<List<FollowViewModel>>() {}.getType();
-        String json = new Gson().toJson(follows,followsType);
+        Type type = new TypeToken<List<FollowViewModel>>() {}.getType();
+        String json = new Gson().toJson(follows,type);
         return Response.ok().entity(json).build();
     }
 

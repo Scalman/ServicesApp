@@ -40,8 +40,8 @@ public class UserService {
     public Response getUsersByName(@PathParam("id") String id,@PathParam("name") String name) {
         int userId = Integer.parseInt(id);
         List<UserViewModel> users =  db.findUsersByName(userId,name).stream().map(ModelConverter::convertToUserViewModel).collect(Collectors.toList());
-        Type usersType = new TypeToken<List<UserViewModel>>() {}.getType();
-        String json = new Gson().toJson(users,usersType);
+        Type type = new TypeToken<List<UserViewModel>>() {}.getType();
+        String json = new Gson().toJson(users,type);
         return Response.ok().entity(json).build();
     }
 
