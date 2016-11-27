@@ -6,6 +6,10 @@
 
     <persistence-unit name="test">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>DB.Entities.UserEntity</class>
+        <class>DB.Entities.PostEntity</class>
+        <class>DB.Entities.ChatMessageEntity</class>
+        <class>DB.Entities.FollowEntity</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/lab1"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>

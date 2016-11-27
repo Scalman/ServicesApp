@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by waleedhassan on 27/11/16.
  */
-@Path("/")
+@Path("/Chat")
 public class ChatService {
     private ChatDb db;
 

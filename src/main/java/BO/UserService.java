@@ -1,20 +1,16 @@
 package BO;
 
 import DB.DAL.UserDb;
-import DB.Entities.UserEntity;
 import ViewModel.UserViewModel;
+import com.google.gson.Gson;
 
-import javax.enterprise.inject.Model;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-
-@Path("/")
+@Path("/Users")
 public class UserService {
 
     private UserDb db;
@@ -23,12 +19,13 @@ public class UserService {
         this.db = new UserDb();
     }
 
-    @GET
-    @Path("/users")
-    @Produces(MediaType.TEXT_PLAIN)
-    public List<UserViewModel> getAllUsers(UserViewModel user, String searchTerm) {
-        Collection<UserEntity> userEntities = db.findUsersByName(user, searchTerm);
-        return userEntities.stream().map(ModelConverter::convertToUserViewModel).collect(Collectors.toList());
+    @POST
+    @Path("/All")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllUsers(UserViewModel user) {
+        System.out.printf(user.getUsername());
+        return Response.ok().entity(new Gson().toJson(user)).build();
     }
 
     @POST
@@ -41,7 +38,7 @@ public class UserService {
     }
 
     @POST
-    @Path("/login")
+    @Path("/Register")
     @Consumes(MediaType.APPLICATION_JSON)   //parameter Argument
     public void register(UserViewModel user) {
 

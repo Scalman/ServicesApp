@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Created by waleedhassan on 26/11/16.
  */
 
-@Path("/")
+@Path("/Post")
 public class PostMessageService {
 
     private PostDb db;
@@ -29,7 +29,7 @@ public class PostMessageService {
     }
 
     @POST
-    @Path("/post")
+    @Path("/Create")
     @Consumes(MediaType.APPLICATION_JSON)
     public void createPost(PostViewModel post) {
         db.addPost(post);

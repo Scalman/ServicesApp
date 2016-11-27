@@ -1,10 +1,12 @@
 package ViewModel;
 
+import java.io.Serializable;
+
 /**
  * Created by waleedhassan on 26/11/16.
  * Just a ViewModel
  */
-public class UserViewModel {
+public class UserViewModel implements Serializable{
 
     private int userId;
     private String username;

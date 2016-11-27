@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by waleedhassan on 27/11/16.
  */
-@Path("/")
+@Path("/Follow")
 public class FollowService {
 
     private FollowDb db;
@@ -27,7 +27,7 @@ public class FollowService {
     }
 
     @POST
-    @Path("/follow")
+    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addFriend(FollowViewModel follow) {
         db.addFollower(follow);
