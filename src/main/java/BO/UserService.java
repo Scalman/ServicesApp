@@ -20,7 +20,7 @@ public class UserService {
     private UserDb db;
 
     public UserService() {
-        this.db = new UserDb();
+        db = new UserDb();
     }
 
     @GET

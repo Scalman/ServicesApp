@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 
 @Path("/Chat")
 public class ChatService {
+
     private ChatDb db;
 
     public ChatService(){
-        this.db = new ChatDb();
+        db = new ChatDb();
     }
 
     @POST
@@ -32,7 +33,7 @@ public class ChatService {
     }
 
     @POST
-    @Path("/ChatMessagesBySenderAndReceiver")
+    @Path("/ChatMessages")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response getChatMessagesBySenderAndReceiver(ChatMessageViewModel chat) {

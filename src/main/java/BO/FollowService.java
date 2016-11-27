@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 @Path("/Follow")
 public class FollowService {
-
     private FollowDb db;
 
     public FollowService(){
-        this.db = new FollowDb();
+        db = new FollowDb();
     }
 
     @POST

@@ -5,8 +5,6 @@ import DB.Entities.ChatMessageEntity;
 import ViewModel.ChatMessageViewModel;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.criteria.*;
 import java.sql.Date;
 import java.util.Calendar;
@@ -15,19 +13,18 @@ import java.util.Collection;
 public class ChatDb {
 
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private ChatMessageEntity chatMessage;
 
     public ChatDb() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("test");
+
     }
 
     public void addMessage(ChatMessageViewModel chat) {
         this.chatMessage = ModelConverter.convertToChatMessageEntity(chat);
         this.chatMessage.setSendDate(new Date(Calendar.getInstance().getTime().getTime()));
 
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(this.chatMessage);
         entityManager.getTransaction().commit();
@@ -37,7 +34,7 @@ public class ChatDb {
     public Collection<ChatMessageEntity> findChatMessagesBySenderAndReceiver(ChatMessageViewModel chat) {
         this.chatMessage = ModelConverter.convertToChatMessageEntity(chat);
 
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ChatMessageEntity> cq = cb.createQuery(ChatMessageEntity.class);
         Root<ChatMessageEntity> c = cq.from(ChatMessageEntity.class);

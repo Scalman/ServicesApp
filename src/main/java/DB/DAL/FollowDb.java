@@ -6,8 +6,6 @@ import DB.Entities.UserEntity;
 import ViewModel.FollowViewModel;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.Collection;
 /**
  * Created by waleedhassan on 26/11/16.
@@ -15,23 +13,20 @@ import java.util.Collection;
  */
 public class FollowDb {
 
-
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private FollowEntity follow;
 
-    public FollowDb() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("test");
+    public FollowDb(){
     }
     public Collection<FollowEntity> findYourFollows(int userId) {
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         UserEntity user = entityManager.find(UserEntity.class,userId);
         Collection<FollowEntity> follows = user.getFollow();
         entityManager.close();
         return follows;
     }
     public Collection<FollowEntity> findYourFollowsByName(int userId, String name) {
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         UserEntity user = entityManager.find(UserEntity.class,userId);
         Collection<FollowEntity> follows = user.getFollow();
         follows.removeIf(f -> !f.getFollowing().getUsername().contains(name));
@@ -40,7 +35,7 @@ public class FollowDb {
     }
     public void addFollower(FollowViewModel follow) {
         this.follow = ModelConverter.convertToFollowEntity(follow);
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(this.follow);
         entityManager.getTransaction().commit();

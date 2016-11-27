@@ -6,8 +6,6 @@ import DB.Entities.UserEntity;
 import ViewModel.UserViewModel;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.criteria.*;
 
 import java.util.ArrayList;
@@ -16,12 +14,10 @@ import java.util.stream.Collectors;
 
 
 public class UserDb {
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private UserEntity user;
 
     public UserDb() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("test");
     }
 
 
@@ -30,7 +26,7 @@ public class UserDb {
         return follows.stream().map(f -> f.getFollowing().getUsername()).collect(Collectors.toCollection(ArrayList::new));
     }
     public Collection<UserEntity> findUsersByName(int userId, String name) {
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
         Root<UserEntity> u = cq.from(UserEntity.class);
@@ -49,14 +45,15 @@ public class UserDb {
         return  users;
     }
     public Collection<UserEntity> findUsers(int userId) {
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
         Root<UserEntity> u = cq.from(UserEntity.class);
         this.user = entityManager.find(UserEntity.class,userId);
         Predicate p1 = cb.notEqual(u.get("username"),this.user.getUsername());
-        Collection<String> usrs = getUserFollowings();
-        if(usrs.size()>0) {
+        Collection<FollowEntity> follows = this.user.getFollow();
+        if(follows.size()>0) {
+            Collection<String> usrs = getUserFollowings();
             Expression<String> exp = u.get("username");
             Predicate p2 = cb.not(exp.in(usrs));
             cq.where(cb.and(p1,p2));
@@ -69,7 +66,7 @@ public class UserDb {
     }
     public void register(UserViewModel user){
         this.user =  ModelConverter.convertToUserEntity(user);
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(this.user);
         entityManager.getTransaction().commit();
@@ -78,7 +75,7 @@ public class UserDb {
     }
     public UserEntity authenticate(UserViewModel user){
         this.user = ModelConverter.convertToUserEntity(user);
-        entityManager = entityManagerFactory.createEntityManager();
+        entityManager = DbContext.emf.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
         Root<UserEntity> u = cq.from(UserEntity.class);

@@ -21,11 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("/Post")
-public class PostMessageService {
-
+public class PostService {
     private PostDb db;
-    public PostMessageService(){
-        this.db = new PostDb();
+    public PostService(){
+        db = new PostDb();
     }
 
     @POST
