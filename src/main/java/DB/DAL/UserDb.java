@@ -25,33 +25,48 @@ public class UserDb {
     }
 
 
-    public Collection<UserEntity> findUsersByName(UserViewModel user, String name) {
-        this.user = ModelConverter.convertToUserEntity(user);
-
+    private Collection<String> getUserFollowings(){
+        Collection<FollowEntity> follows = this.user.getFollow();
+        return follows.stream().map(f -> f.getFollowing().getUsername()).collect(Collectors.toCollection(ArrayList::new));
+    }
+    public Collection<UserEntity> findUsersByName(int userId, String name) {
         entityManager = entityManagerFactory.createEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
         Root<UserEntity> u = cq.from(UserEntity.class);
-
+        this.user = entityManager.find(UserEntity.class,userId);
         Predicate p1 = cb.and(cb.notEqual(u.get("username"),this.user.getUsername()),cb.like(u.get("username"),"%"+name+"%"));
-
-        UserEntity usr = entityManager.find(UserEntity.class,this.user.getUserId());
-        Collection<FollowEntity> follows = usr.getFollow();
-        if(follows.size()>0) {
-            Collection<String> usrs = follows.stream().map(f -> f.getFollowing().getUsername()).collect(Collectors.toCollection(ArrayList::new));
+        Collection<String> usrs = getUserFollowings();
+        if(usrs.size()>0) {
             Expression<String> exp = u.get("username");
             Predicate p2 = cb.not(exp.in(usrs));
             cq.where(cb.and(p1,p2));
         } else {
             cq.where(p1);
         }
-
         Collection<UserEntity> users = entityManager.createQuery(cq).getResultList();
         entityManager.close();
-
         return  users;
     }
-
+    public Collection<UserEntity> findUsers(int userId) {
+        entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
+        Root<UserEntity> u = cq.from(UserEntity.class);
+        this.user = entityManager.find(UserEntity.class,userId);
+        Predicate p1 = cb.notEqual(u.get("username"),this.user.getUsername());
+        Collection<String> usrs = getUserFollowings();
+        if(usrs.size()>0) {
+            Expression<String> exp = u.get("username");
+            Predicate p2 = cb.not(exp.in(usrs));
+            cq.where(cb.and(p1,p2));
+        } else {
+            cq.where(p1);
+        }
+        Collection<UserEntity> users = entityManager.createQuery(cq).getResultList();
+        entityManager.close();
+        return  users;
+    }
     public void register(UserViewModel user){
         this.user =  ModelConverter.convertToUserEntity(user);
         entityManager = entityManagerFactory.createEntityManager();

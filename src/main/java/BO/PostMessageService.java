@@ -5,20 +5,20 @@ import DB.Entities.PostEntity;
 import ViewModel.FollowViewModel;
 import ViewModel.PostViewModel;
 import ViewModel.UserViewModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-/**
- * Created by waleedhassan on 26/11/16.
- */
 
 @Path("/Post")
 public class PostMessageService {
@@ -31,29 +31,34 @@ public class PostMessageService {
     @POST
     @Path("/Create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void createPost(PostViewModel post) {
+    public Response createPost(PostViewModel post) {
         db.addPost(post);
+        return Response.ok().build();
     }
 
     @POST
-    @Path("/getFollowingPosts")
+    @Path("/FollowingPosts")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public List<PostViewModel> getFollowingPosts(List<FollowViewModel> follows) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFollowingPosts(List<FollowViewModel> follows) {
         Collection<PostEntity> postEntities = new ArrayList<>();
         for (FollowViewModel f:follows) {
             postEntities.addAll(db.findPostsByUser(f.getFollowing()));
         }
-
-        return postEntities.stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
+        List<PostViewModel> posts =  postEntities.stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
+        Type postsType = new TypeToken<List<PostViewModel>>() {}.getType();
+        String json = new Gson().toJson(posts,postsType);
+        return Response.ok().entity(json).build();
     }
 
     @POST
-    @Path("/getYourPosts")
+    @Path("/YourPosts")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public List<PostViewModel> getYourPosts(UserViewModel user) {
-        Collection<PostEntity> postEntities = db.findPostsByUser(user);
-        return postEntities.stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getYourPosts(UserViewModel user) {
+        List<PostViewModel> posts =  db.findPostsByUser(user).stream().map(ModelConverter::convertToPostViewModel).collect(Collectors.toList());
+        Type postsType = new TypeToken<List<PostViewModel>>() {}.getType();
+        String json = new Gson().toJson(posts,postsType);
+        return Response.ok().entity(json).build();
     }
 }

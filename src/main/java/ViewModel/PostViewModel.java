@@ -1,11 +1,9 @@
 package ViewModel;
+import java.io.Serializable;
 import java.sql.Date;
 
-/**
- * Created by waleedhassan on 26/11/16.
- * Model Contains post
- */
-public class PostViewModel {
+
+public class PostViewModel implements Serializable {
 
     private int postId;
     private String body;

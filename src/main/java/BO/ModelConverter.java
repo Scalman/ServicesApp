@@ -9,10 +9,7 @@ import ViewModel.FollowViewModel;
 import ViewModel.PostViewModel;
 import ViewModel.UserViewModel;
 
-/**
- * Created by waleedhassan on 26/11/16.
- * This Class converts from and to ViewModel & Entities
- */
+
 public class ModelConverter {
 
 

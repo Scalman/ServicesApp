@@ -1,9 +1,9 @@
 package ViewModel;
 
-/**
- * Created by waleedhassan on 26/11/16.
- */
-public class FollowViewModel {
+
+import java.io.Serializable;
+
+public class FollowViewModel implements Serializable {
 
     private UserViewModel follower;
     private UserViewModel following;

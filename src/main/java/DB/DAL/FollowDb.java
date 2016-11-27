@@ -4,7 +4,6 @@ import BO.ModelConverter;
 import DB.Entities.FollowEntity;
 import DB.Entities.UserEntity;
 import ViewModel.FollowViewModel;
-import ViewModel.UserViewModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +23,16 @@ public class FollowDb {
     public FollowDb() {
         entityManagerFactory = Persistence.createEntityManagerFactory("test");
     }
-    public Collection<FollowEntity> findYourFollows(UserViewModel usr, String name) {
+    public Collection<FollowEntity> findYourFollows(int userId) {
         entityManager = entityManagerFactory.createEntityManager();
-        UserEntity user = entityManager.find(UserEntity.class,usr.getUserId());
+        UserEntity user = entityManager.find(UserEntity.class,userId);
+        Collection<FollowEntity> follows = user.getFollow();
+        entityManager.close();
+        return follows;
+    }
+    public Collection<FollowEntity> findYourFollowsByName(int userId, String name) {
+        entityManager = entityManagerFactory.createEntityManager();
+        UserEntity user = entityManager.find(UserEntity.class,userId);
         Collection<FollowEntity> follows = user.getFollow();
         follows.removeIf(f -> !f.getFollowing().getUsername().contains(name));
         entityManager.close();

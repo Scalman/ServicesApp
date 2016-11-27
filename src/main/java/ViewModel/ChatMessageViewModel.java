@@ -1,10 +1,9 @@
 package ViewModel;
 
+import java.io.Serializable;
 import java.sql.Date;
-/**
- * Created by waleedhassan on 27/11/16.
- */
-public class ChatMessageViewModel {
+
+public class ChatMessageViewModel implements Serializable {
     private int chatMessageId;
     private String message;
     private Date sendDate;

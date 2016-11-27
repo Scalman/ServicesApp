@@ -1,22 +1,20 @@
 package BO;
 
 import DB.DAL.ChatDb;
-import DB.Entities.ChatMessageEntity;
 import ViewModel.ChatMessageViewModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by waleedhassan on 27/11/16.
- */
 @Path("/Chat")
 public class ChatService {
     private ChatDb db;
@@ -26,18 +24,21 @@ public class ChatService {
     }
 
     @POST
-    @Path("/sendMessage")
+    @Path("/SendMessage")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void sendMessage(ChatMessageViewModel chat) {
+    public Response sendMessage(ChatMessageViewModel chat) {
         db.addMessage(chat);
+        return Response.ok().build();
     }
 
     @POST
-    @Path("/getChatMessagesBySenderAndReceiver")
+    @Path("/ChatMessagesBySenderAndReceiver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public List<ChatMessageViewModel> getChatMessagesBySenderAndReceiver(ChatMessageViewModel chat) {
-        Collection<ChatMessageEntity> chatMessages = db.findChatMessagesBySenderAndReceiver(chat);
-        return chatMessages.stream().map(ModelConverter::convertToChatMessageViewModel).collect(Collectors.toList());
+    public Response getChatMessagesBySenderAndReceiver(ChatMessageViewModel chat) {
+        List<ChatMessageViewModel> chatMessages =  db.findChatMessagesBySenderAndReceiver(chat).stream().map(ModelConverter::convertToChatMessageViewModel).collect(Collectors.toList());
+        Type chatMessagesType = new TypeToken<List<ChatMessageViewModel>>() {}.getType();
+        String json = new Gson().toJson(chatMessages,chatMessagesType);
+        return Response.ok().entity(json).build();
     }
 }

@@ -1,22 +1,18 @@
 package BO;
 
 import DB.DAL.FollowDb;
-import DB.Entities.FollowEntity;
 import ViewModel.FollowViewModel;
-import ViewModel.UserViewModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by waleedhassan on 27/11/16.
- */
+
 @Path("/Follow")
 public class FollowService {
 
@@ -27,18 +23,34 @@ public class FollowService {
     }
 
     @POST
-    @Path("/add")
+    @Path("/Add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addFriend(FollowViewModel follow) {
+    public Response addFriend(FollowViewModel follow) {
         db.addFollower(follow);
+        return Response.ok().build();
     }
 
-    @POST
-    @Path("/getYourFollows")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public List<FollowViewModel> getYourFollows(UserViewModel user, String searchTerm) {
-        Collection<FollowEntity> follows = db.findYourFollows(user, searchTerm);
-        return follows.stream().map(ModelConverter::convertToFollowViewModel).collect(Collectors.toList());
+    @GET
+    @Path("/Following/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getYourFollows(@PathParam("id") String id) {
+        int userId = Integer.parseInt(id);
+        List<FollowViewModel> follows =  db.findYourFollows(userId).stream().map(ModelConverter::convertToFollowViewModel).collect(Collectors.toList());
+        Type followsType = new TypeToken<List<FollowViewModel>>() {}.getType();
+        String json = new Gson().toJson(follows,followsType);
+        return Response.ok().entity(json).build();
     }
+
+    @GET
+    @Path("/Following/{id}/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getYourFollowsByName(@PathParam("id") String id,@PathParam("name") String name) {
+        int userId = Integer.parseInt(id);
+        List<FollowViewModel> follows =  db.findYourFollowsByName(userId,name).stream().map(ModelConverter::convertToFollowViewModel).collect(Collectors.toList());
+        Type followsType = new TypeToken<List<FollowViewModel>>() {}.getType();
+        String json = new Gson().toJson(follows,followsType);
+        return Response.ok().entity(json).build();
+    }
+
+
 }
